@@ -1,0 +1,5 @@
+@safe=lib/safe-smart-account
+@openzeppelin/=lib/openzeppelin-contracts/
+@solady=lib/solady
+@src=src
+@test=test
