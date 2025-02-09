@@ -14,6 +14,16 @@ For example, a 3/5 Safe (3 owners out of 5 must sign in order to execute a trans
 - 2/2/3 Safe where two of the owners are AI agents that can Safe manage funds but only if the recipient is the Safe account.  
 - 2/3/5 Safe for a DAO treasury where at two owners can execute approved governance proposals, submit emergency transactions, but need 3 signatures for token transfers, or protocol parameter changes
 
+## Deployments
+
+| Network | Address |
+| ------- | ------- |
+| Ethereum | [`0xF22950636786102A678B4d821a810C865E28cD76`](https://etherscan.io/address/0xF22950636786102A678B4d821a810C865E28cD76) |
+| Arbitrum | [`0xF22950636786102A678B4d821a810C865E28cD76`](https://arbiscan.io/address/0xF22950636786102A678B4d821a810C865E28cD76) |
+| Optimism | [`0xF22950636786102A678B4d821a810C865E28cD76`](https://optimistic.etherscan.io/address/0xF22950636786102A678B4d821a810C865E28cD76) |
+| Celo | [`0xF22950636786102A678B4d821a810C865E28cD76`](https://celoscan.io/address/0xF22950636786102A678B4d821a810C865E28cD76) |
+| Linea | [`0xF22950636786102A678B4d821a810C865E28cD76`](https://lineascan.build/address/0xF22950636786102A678B4d821a810C865E28cD76) |
+
 ## How it works
 
 1. Setup: After deploying the Safe, the `RestrictedActionsGuard` must be set up with a chosen Guard threshold.
@@ -118,8 +128,6 @@ safe.execTransaction(
     signatures
 );
 ```
-
-## Deployments
 
 ## Alternatives
 

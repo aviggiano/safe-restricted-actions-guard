@@ -3,3 +3,4 @@
 @solady=lib/solady
 @src=src
 @test=test
+@script=script

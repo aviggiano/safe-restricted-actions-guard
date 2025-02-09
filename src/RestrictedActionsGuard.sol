@@ -33,6 +33,7 @@ import {ExtendedSignatureDecoder} from "@src/ExtendedSignatureDecoder.sol";
 ///        - `mask` is 0x00     => wildcard (allow any byte)
 /// @dev Invariants:
 ///      - threshold <= guardThreshold <= ownersCount
+///      - safe.executeTransaction is successful if signers.length >= guardThreshold OR calldata is valid wrt target/pattern/match
 contract RestrictedActionsGuard is BaseGuard, ExtendedSignatureDecoder {
     using EnumerableSet for EnumerableSet.AddressSet;
 
