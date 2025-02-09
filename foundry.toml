@@ -16,6 +16,7 @@ evm_version = 'paris'
   arbitrum = "${ARBITRUM_RPC_URL}"
   celo = "${CELO_RPC_URL}"
   linea = "${LINEA_RPC_URL}"
+  avalanche = "${AVALANCHE_RPC_URL}"
 
 [etherscan]
   mainnet = { key = "${API_KEY_ETHERSCAN}" }
@@ -23,3 +24,4 @@ evm_version = 'paris'
   arbitrum = { key = "${API_KEY_ARBITRUM}" }
   celo = { key = "${API_KEY_CELO}" }
   linea = { key = "${API_KEY_LINEA}" }
+  avalanche = { key = "${API_KEY_AVALANCHE}" }

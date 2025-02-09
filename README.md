@@ -18,11 +18,12 @@ For example, a 3/5 Safe (3 owners out of 5 must sign in order to execute a trans
 
 | Network | Address |
 | ------- | ------- |
-| Ethereum | [`0xF22950636786102A678B4d821a810C865E28cD76`](https://etherscan.io/address/0xF22950636786102A678B4d821a810C865E28cD76) |
-| Arbitrum | [`0xF22950636786102A678B4d821a810C865E28cD76`](https://arbiscan.io/address/0xF22950636786102A678B4d821a810C865E28cD76) |
-| Optimism | [`0xF22950636786102A678B4d821a810C865E28cD76`](https://optimistic.etherscan.io/address/0xF22950636786102A678B4d821a810C865E28cD76) |
-| Celo | [`0xF22950636786102A678B4d821a810C865E28cD76`](https://celoscan.io/address/0xF22950636786102A678B4d821a810C865E28cD76) |
-| Linea | [`0xF22950636786102A678B4d821a810C865E28cD76`](https://lineascan.build/address/0xF22950636786102A678B4d821a810C865E28cD76) |
+| Ethereum | [`0x457f785000cA495FAe63AAb38C9fC4b2965B106a`](https://etherscan.io/address/0x457f785000cA495FAe63AAb38C9fC4b2965B106a) |
+| Arbitrum | [`0x457f785000cA495FAe63AAb38C9fC4b2965B106a`](https://arbiscan.io/address/0x457f785000cA495FAe63AAb38C9fC4b2965B106a) |
+| Optimism | [`0x457f785000cA495FAe63AAb38C9fC4b2965B106a`](https://optimistic.etherscan.io/address/0x457f785000cA495FAe63AAb38C9fC4b2965B106a) |
+| Celo | [`0x457f785000cA495FAe63AAb38C9fC4b2965B106a`](https://celoscan.io/address/0x457f785000cA495FAe63AAb38C9fC4b2965B106a) |
+| Linea | [`0x457f785000cA495FAe63AAb38C9fC4b2965B106a`](https://lineascan.build/address/0x457f785000cA495FAe63AAb38C9fC4b2965B106a) |
+| Avalanche | [`0x457f785000cA495FAe63AAb38C9fC4b2965B106a`](https://snowtrace.io/address/0x457f785000cA495FAe63AAb38C9fC4b2965B106a) |
 
 ## How it works
 
