@@ -104,10 +104,10 @@ safe.execTransaction(
 
 // 4. Whitelist the restricted actions
 // 4.1 Any owner can deposit to a vault but only if the recipient is the safe account
-bytes memory pattern1 = abi.encodeCall(ERC4626.deposit, (type(uint256).max, address(safe)));
+bytes memory pattern1 = abi.encodeCall(ERC4626.deposit, (0, address(safe)));
 bytes memory mask1 = abi.encodeWithSelector(bytes4(0xFFFFFFFF), 0, address(uint160(type(uint160).max)));
 // 4.2 Any owner can withdraw from a vault but only if the recipient is the safe account
-bytes memory pattern2 = abi.encodeCall(ERC4626.withdraw, (type(uint256).max, address(safe), address(0)));
+bytes memory pattern2 = abi.encodeCall(ERC4626.withdraw, (0, address(safe), address(0)));
 bytes memory mask2 = abi.encodeWithSelector(bytes4(0xFFFFFFFF), 0, address(uint160(type(uint160).max), 0));
 address target = address(vault);
 bytes[] memory patterns = new bytes[](2);
