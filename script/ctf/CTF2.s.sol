@@ -3,63 +3,31 @@ pragma solidity ^0.8.20;
 
 import {console, Script} from "forge-std/Script.sol";
 import {Mainnet} from "@script/addresses/Mainnet.sol";
-import {WETH} from "@solady/src/tokens/WETH.sol";
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {ISizeWrong} from "@script/interfaces/ISize.sol";
+import {ISize, DepositParams, WithdrawParams} from "@script/interfaces/ISize.sol";
 import {Safe} from "@safe/contracts/Safe.sol";
 import {RestrictedActionsGuard} from "@src/RestrictedActionsGuard.sol";
 import {Enum} from "@safe/contracts/common/Enum.sol";
 
-contract CTFScript is Script, Mainnet {
+contract CTF2Script is Script, Mainnet {
+    bytes signature1;
+
     function run() public {
         vm.startBroadcast();
+        signature1 = vm.envBytes("SIGNATURE1");
         Safe safe = Safe(payable(vm.envAddress("SAFE_ADDRESS")));
 
         console.log("[CTF] running...");
+        console.log("[CTF] fixing allowed actions...");
         address target;
         bytes[] memory patterns;
         bytes[] memory masks;
-
-        console.log("--------------------------------");
-        console.log("[CTF] WETH restricted actions");
-        console.log("\t[CTF] allow WETH receive");
-        patterns = new bytes[](2);
-        masks = new bytes[](2);
-        target = address(WETH_ADDRESS);
-        patterns[0] = bytes("");
-        masks[0] = bytes("");
-        console.log(target);
-        console.logBytes(patterns[0]);
-        console.logBytes(masks[0]);
-
-        console.log("--------------------------------");
-        console.log("\t[CTF] allow WETH withdraw any amount");
-        patterns[1] = abi.encodeCall(WETH.withdraw, (0));
-        masks[1] = abi.encodeWithSelector(bytes4(0xFFFFFFFF), 0);
-        console.log(target);
-        console.logBytes(patterns[1]);
-        console.logBytes(masks[1]);
-        _setRestrictedActions(safe, target, patterns, masks);
-
-        console.log("--------------------------------");
-        console.log("[CTF] USDC restricted actions");
-        console.log("\t[CTF] allow USDC approve any amount to Size sUSDe/USDC market");
-        patterns = new bytes[](1);
-        masks = new bytes[](1);
-        target = address(USDC_ADDRESS);
-        patterns[0] = abi.encodeCall(IERC20.approve, (address(SIZE_SUSDE_USDC_ADDRESS), 0));
-        masks[0] = abi.encodeWithSelector(bytes4(0xFFFFFFFF), address(uint160(type(uint160).max)), 0);
-        console.log(target);
-        console.logBytes(patterns[0]);
-        console.logBytes(masks[0]);
-        _setRestrictedActions(safe, target, patterns, masks);
 
         console.log("--------------------------------");
         console.log("\t[CTF] allow Size.deposit any token, any amount to safe");
         patterns = new bytes[](2);
         masks = new bytes[](2);
         target = address(SIZE_SUSDE_USDC_ADDRESS);
-        patterns[0] = abi.encodeCall(ISizeWrong.deposit, (address(0), 0, address(safe)));
+        patterns[0] = abi.encodeCall(ISize.deposit, (DepositParams(address(0), 0, address(safe))));
         masks[0] = abi.encodeWithSelector(bytes4(0xFFFFFFFF), address(0), 0, address(uint160(type(uint160).max)));
         console.log(target);
         console.logBytes(patterns[0]);
@@ -67,7 +35,7 @@ contract CTFScript is Script, Mainnet {
 
         console.log("--------------------------------");
         console.log("\t[CTF] allow Size.withdraw any token, any amount to safe");
-        patterns[1] = abi.encodeCall(ISizeWrong.withdraw, (address(0), 0, address(safe)));
+        patterns[1] = abi.encodeCall(ISize.withdraw, (WithdrawParams(address(0), 0, address(safe))));
         masks[1] = abi.encodeWithSelector(bytes4(0xFFFFFFFF), address(0), 0, address(uint160(type(uint160).max)));
         console.log(target);
         console.logBytes(patterns[1]);
@@ -98,6 +66,16 @@ contract CTFScript is Script, Mainnet {
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(dataHash);
         bytes memory signatures = abi.encodePacked(r, s, v);
 
+        console.log("--------------------------------");
+        console.log("signatures");
+        console.logBytes(signatures);
+
+        signatures = abi.encodePacked(signature1, signatures);
+
+        if (signatures.length < 65 * 2) {
+            return;
+        }
+
         safe.execTransaction(
             RESTRICTED_ACTIONS_GUARD_ADDRESS,
             0,
@@ -108,7 +86,7 @@ contract CTFScript is Script, Mainnet {
             0,
             address(0),
             payable(address(0)),
-            signatures
+            abi.encodePacked(signatures)
         );
     }
 }

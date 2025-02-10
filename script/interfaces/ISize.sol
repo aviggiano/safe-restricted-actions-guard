@@ -13,6 +13,11 @@ struct WithdrawParams {
     address to;
 }
 
+interface ISizeWrong {
+    function deposit(address token, uint256 amount, address to) external;
+    function withdraw(address token, uint256 amount, address to) external;
+}
+
 interface ISize {
     function deposit(DepositParams calldata params) external;
     function withdraw(WithdrawParams calldata params) external;
