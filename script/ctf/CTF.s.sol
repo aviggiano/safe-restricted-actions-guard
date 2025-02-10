@@ -5,7 +5,7 @@ import {console, Script} from "forge-std/Script.sol";
 import {Mainnet} from "@script/addresses/Mainnet.sol";
 import {WETH} from "@solady/src/tokens/WETH.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {ISize} from "@script/interfaces/ISize.sol";
+import {ISize, DepositParams, WithdrawParams} from "@script/interfaces/ISize.sol";
 import {Safe} from "@safe/contracts/Safe.sol";
 import {RestrictedActionsGuard} from "@src/RestrictedActionsGuard.sol";
 import {Enum} from "@safe/contracts/common/Enum.sol";
@@ -59,7 +59,7 @@ contract CTFScript is Script, Mainnet {
         patterns = new bytes[](2);
         masks = new bytes[](2);
         target = address(SIZE_SUSDE_USDC_ADDRESS);
-        patterns[0] = abi.encodeCall(ISize.deposit, (address(0), 0, address(safe)));
+        patterns[0] = abi.encodeCall(ISize.deposit, (DepositParams(address(0), 0, address(safe))));
         masks[0] = abi.encodeWithSelector(bytes4(0xFFFFFFFF), address(0), 0, address(uint160(type(uint160).max)));
         console.log(target);
         console.logBytes(patterns[0]);
@@ -67,7 +67,7 @@ contract CTFScript is Script, Mainnet {
 
         console.log("--------------------------------");
         console.log("\t[CTF] allow Size.withdraw any token, any amount to safe");
-        patterns[1] = abi.encodeCall(ISize.withdraw, (address(0), 0, address(safe)));
+        patterns[1] = abi.encodeCall(ISize.withdraw, (WithdrawParams(address(0), 0, address(safe))));
         masks[1] = abi.encodeWithSelector(bytes4(0xFFFFFFFF), address(0), 0, address(uint160(type(uint160).max)));
         console.log(target);
         console.logBytes(patterns[1]);
