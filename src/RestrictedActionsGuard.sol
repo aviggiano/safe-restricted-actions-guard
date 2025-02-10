@@ -63,6 +63,7 @@ contract RestrictedActionsGuard is BaseGuard, ExtendedSignatureDecoder {
     error PatternsAndMasksMustHaveSameLength(address _safe, address _to, uint256 _patternsLength, uint256 _masksLength);
     error PatternAndMaskMustHaveSameLength(address _safe, address _to, uint256 _patternLength, uint256 _maskLength);
     error ActionNotAllowed(address _safe, address _to, bytes _data);
+    error RefundParamsNotAllowed(address _safe, address _to, bytes _data);
 
     /*//////////////////////////////////////////////////////////////
                             METHODS
@@ -137,8 +138,15 @@ contract RestrictedActionsGuard is BaseGuard, ExtendedSignatureDecoder {
             // there are at least guardThreshold signers, so the transaction is allowed
             return;
         } else if (_matchesPatternsMasks(to, data)) {
-            // data matches pattern+mask
-            return;
+            if (
+                safeTxGas != 0 || baseGas != 0 || gasPrice != 0 || gasToken != address(0)
+                    || refundReceiver != address(0)
+            ) {
+                revert RefundParamsNotAllowed(msg.sender, to, data);
+            } else {
+                // data matches pattern+mask
+                return;
+            }
         } else {
             // action is not allowed
             revert ActionNotAllowed(msg.sender, to, data);
