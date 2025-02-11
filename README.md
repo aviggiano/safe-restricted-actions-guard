@@ -151,6 +151,10 @@ While the Zodiac Roles Modifier provides a high degree of flexibility, it comes 
 
 If your use case requires straightforward permission control over a Safe while maintaining a simple setup, `RestrictedActionsGuard` can be a more practical choice.
 
-## Disclaimer
+## Security
 
-This code is provided "as is" and has not undergone a formal security audit. Use it at your own risk. The author(s) assume no liability for any damages or losses resulting from the use of this code. It is your responsibility to thoroughly review, test, and validate its security and functionality before deploying or relying on it in any environment.
+This code is provided "as is" and has not undergone a formal security audit. 
+
+While a live [mainnet CTF](https://medium.com/@flackoon/your-safe-wallet-guard-might-not-be-enough-523f28924922) with +$5k worth of assets on the line was able to uncover two vulnerabilities (fixed in v0.0.3), it does not constitute a formal review and does not prevent the code from containing other issues.
+
+Use it at your own risk. The author(s) assume no liability for any damages or losses resulting from the use of this code. It is your responsibility to thoroughly review, test, and validate its security and functionality before deploying or relying on it in any environment.
