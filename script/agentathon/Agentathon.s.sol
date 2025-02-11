@@ -55,6 +55,8 @@ contract AgentathonScript is Script {
         Safe safe = Safe(payable(vm.envAddress("SAFE_ADDRESS")));
 
         for (uint256 i = 0; i < networks.length; i++) {
+            if(i == 0) continue;
+
             vm.createSelectFork(networks[i]);
             vm.startBroadcast();
             console.log("--------------------------------");
@@ -65,11 +67,10 @@ contract AgentathonScript is Script {
             _setFallbackHandler(safe, address(0));
             console.log("--------------------------------");
             _setGuard(safe, RESTRICTED_ACTIONS_GUARD_ADDRESS, 1);
-            console.log("--------------------------------");
-            _changeThreshold(safe, 2);
+            // console.log("--------------------------------");
+            // _changeThreshold(safe, 2); // needs to be set up manually
             console.log("--------------------------------");
             vm.stopBroadcast();
-            break;
         }
 
         console.log("[Agentathon] done");
