@@ -16,31 +16,11 @@ contract AgentathonScript is Script {
     address internal constant RESTRICTED_ACTIONS_GUARD_ADDRESS = 0xa3212332057C479937EA5efE4c92EcE8d3a3100a;
     string[] public networks = ["optimism", "arbitrum", "celo", "linea", "avalanche"];
     address[][] public tokens = [
-        [
-            0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85, /* USDC */
-            0x94b008aA00579c1307B0EF2c499aD98a8ce58e58, /* USDT */
-            0x4200000000000000000000000000000000000006 /* WETH */
-        ],
-        [
-            0xaf88d065e77c8cC2239327C5EDb3A432268e5831, /* USDC */
-            0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9, /* USDT */
-            0x82aF49447D8a07e3bd95BD0d56f35241523fBab1 /* WETH */
-        ],
-        [
-            0x765DE816845861e75A25fCA122bb6898B8B1282a, /* CUSD */
-            0xD8763CBa276a3738E6DE85b4b3bF5FDed6D6cA73, /* CEUR */
-            0x471EcE3750Da237f93B8E339c536989b8978a438 /* CELO */
-        ],
-        [
-            0x176211869cA2b568f2A7D4EE941E073a821EE1ff, /* USDCe */
-            0xA219439258ca9da29E9Cc4cE5596924745e12B93, /* USDT */
-            0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f /* WETH */
-        ],
-        [
-            0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E, /* USDC */
-            0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7, /* USDT */
-            0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7 /* WAVAX */
-        ]
+        [0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85, /* USDC */ 0x4200000000000000000000000000000000000006 /* WETH */ ],
+        [0xaf88d065e77c8cC2239327C5EDb3A432268e5831, /* USDC */ 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1 /* WETH */ ],
+        [0x765DE816845861e75A25fCA122bb6898B8B1282a, /* CUSD */ 0xD8763CBa276a3738E6DE85b4b3bF5FDed6D6cA73 /* CEUR */ ],
+        [0x176211869cA2b568f2A7D4EE941E073a821EE1ff, /* USDCe */ 0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f /* WETH */ ],
+        [0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E, /* USDC */ 0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7 /* WAVAX */ ]
     ];
     address[] public swapRouters = [
         address(0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45),
@@ -55,10 +35,12 @@ contract AgentathonScript is Script {
         Safe safe = Safe(payable(vm.envAddress("SAFE_ADDRESS")));
 
         for (uint256 i = 0; i < networks.length; i++) {
-            if(i == 0) continue;
+            if (i != 1) continue;
 
             vm.createSelectFork(networks[i]);
             vm.startBroadcast();
+
+            assert(safe.getThreshold() == 1);
             console.log("--------------------------------");
             _tokens(safe, i);
             console.log("--------------------------------");
@@ -119,69 +101,70 @@ contract AgentathonScript is Script {
     }
 
     function _tokens(Safe safe, uint256 i) internal {
-        address target;
-        bytes[] memory patterns;
-        bytes[] memory masks;
+        address swapRouter = address(swapRouters[i]);
+        address[] memory tokensArray = tokens[i];
 
         console.log("[Agentathon] TOKENS restricted actions");
         console.log("\t[Agentathon] allow TOKEN approve any amount to SWAP_ROUTER_ADDRESS");
 
-        assert(safe.getThreshold() == 1);
+        for (uint256 j = 0; j < tokensArray.length; j++) {
+            address target = address(tokensArray[j]);
 
-        for (uint256 j = 0; j < tokens[i].length; j++) {
-            target = address(tokens[i][j]);
-            patterns = new bytes[](1);
-            masks = new bytes[](1);
+            bytes[] memory patterns = new bytes[](1);
+            bytes[] memory masks = new bytes[](1);
 
-            patterns[0] = abi.encodeCall(IERC20.approve, (address(swapRouters[i]), 0));
+            patterns[0] = abi.encodeCall(IERC20.approve, (address(swapRouter), 0));
             masks[0] = abi.encodeWithSelector(bytes4(0xFFFFFFFF), address(uint160(type(uint160).max)), 0);
 
             console.log(target);
-            console.logBytes(patterns[0]);
-            console.logBytes(masks[0]);
+            console.logBytes(patterns[j]);
+            console.logBytes(masks[j]);
 
             _setRestrictedActions(safe, target, patterns, masks);
         }
     }
 
     function _swapRouter(Safe safe, uint256 i) internal {
-        address target = address(swapRouters[i]);
-        bytes[] memory patterns;
-        bytes[] memory masks;
+        address swapRouter = address(swapRouters[i]);
+        address[] memory tokensArray = tokens[i];
+
+        address target = address(swapRouter);
+        bytes[] memory patterns = new bytes[](tokensArray.length * tokensArray.length);
+        bytes[] memory masks = new bytes[](tokensArray.length * tokensArray.length);
 
         console.log("[Agentathon] SWAP_ROUTER restricted actions");
         console.log("\t[Agentathon] allow SWAP_ROUTER exactInputSingle");
-        for (uint256 j = 0; j < tokens[i].length; j++) {
-            patterns = new bytes[](tokens[i].length);
-            masks = new bytes[](tokens[i].length);
-            patterns[j] = abi.encodeCall(
-                ISwapRouterV2.exactInputSingle,
-                (
-                    ISwapRouterV2.ExactInputSingleParams({
-                        tokenIn: address(tokens[i][j]),
-                        tokenOut: address(0),
-                        fee: 0,
-                        recipient: address(safe),
-                        amountIn: 0,
-                        amountOutMinimum: 0,
-                        sqrtPriceLimitX96: 0
-                    })
-                )
-            );
-            masks[j] = abi.encodeWithSelector(
-                bytes4(0xFFFFFFFF),
-                address(uint160(type(uint160).max)),
-                address(0),
-                uint24(0),
-                address(uint160(type(uint160).max)),
-                uint256(0),
-                uint256(0),
-                uint160(0)
-            );
-            console.log(target);
-            console.logBytes(patterns[j]);
-            console.logBytes(masks[j]);
-            _setRestrictedActions(safe, target, patterns, masks);
+        for (uint256 j = 0; j < tokensArray.length; j++) {
+            for (uint256 k = 0; k < tokensArray.length; k++) {
+                patterns[j * tokensArray.length + k] = abi.encodeCall(
+                    ISwapRouterV2.exactInputSingle,
+                    (
+                        ISwapRouterV2.ExactInputSingleParams({
+                            tokenIn: address(tokensArray[j]),
+                            tokenOut: address(tokensArray[k]),
+                            fee: 0,
+                            recipient: address(safe),
+                            amountIn: 0,
+                            amountOutMinimum: 0,
+                            sqrtPriceLimitX96: 0
+                        })
+                    )
+                );
+                masks[j * tokensArray.length + k] = abi.encodeWithSelector(
+                    bytes4(0xFFFFFFFF),
+                    address(uint160(type(uint160).max)),
+                    address(uint160(type(uint160).max)),
+                    uint24(0),
+                    address(uint160(type(uint160).max)),
+                    uint256(0),
+                    uint256(0),
+                    uint160(0)
+                );
+                console.log(target);
+                console.logBytes(patterns[j * tokensArray.length + k]);
+                console.logBytes(masks[j * tokensArray.length + k]);
+            }
         }
+        _setRestrictedActions(safe, target, patterns, masks);
     }
 }
