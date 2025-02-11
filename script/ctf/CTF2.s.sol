@@ -9,6 +9,7 @@ import {RestrictedActionsGuard} from "@src/RestrictedActionsGuard.sol";
 import {Enum} from "@safe/contracts/common/Enum.sol";
 
 contract CTF2Script is Script, Mainnet {
+    address internal constant RESTRICTED_ACTIONS_GUARD_ADDRESS = 0x457f785000cA495FAe63AAb38C9fC4b2965B106a;
     bytes signature1;
 
     function run() public {
