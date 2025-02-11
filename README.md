@@ -14,20 +14,15 @@ For example, a 3/5 Safe (3 owners out of 5 must sign in order to execute a trans
 - 2/2/3 Safe where two of the owners are AI agents that can Safe manage funds but only if the recipient is the Safe account.  
 - 2/3/5 Safe for a DAO treasury where at two owners can execute approved governance proposals, submit emergency transactions, but need 3 signatures for token transfers, or protocol parameter changes
 
-## CTF
-
-https://x.com/agfviggiano/status/1888945806511689864
-
 ## Deployments
 
 | Network | Address |
 | ------- | ------- |
-| Ethereum | [`0x457f785000cA495FAe63AAb38C9fC4b2965B106a`](https://etherscan.io/address/0x457f785000cA495FAe63AAb38C9fC4b2965B106a) |
-| Arbitrum | [`0x457f785000cA495FAe63AAb38C9fC4b2965B106a`](https://arbiscan.io/address/0x457f785000cA495FAe63AAb38C9fC4b2965B106a) |
-| Optimism | [`0x457f785000cA495FAe63AAb38C9fC4b2965B106a`](https://optimistic.etherscan.io/address/0x457f785000cA495FAe63AAb38C9fC4b2965B106a) |
-| Celo | [`0x457f785000cA495FAe63AAb38C9fC4b2965B106a`](https://celoscan.io/address/0x457f785000cA495FAe63AAb38C9fC4b2965B106a) |
-| Linea | [`0x457f785000cA495FAe63AAb38C9fC4b2965B106a`](https://lineascan.build/address/0x457f785000cA495FAe63AAb38C9fC4b2965B106a) |
-| Avalanche | [`0x457f785000cA495FAe63AAb38C9fC4b2965B106a`](https://snowtrace.io/address/0x457f785000cA495FAe63AAb38C9fC4b2965B106a) |
+| Arbitrum | [`0xa3212332057C479937EA5efE4c92EcE8d3a3100a`](https://arbiscan.io/address/0xa3212332057C479937EA5efE4c92EcE8d3a3100a) |
+| Optimism | [`0xa3212332057C479937EA5efE4c92EcE8d3a3100a`](https://optimistic.etherscan.io/address/0xa3212332057C479937EA5efE4c92EcE8d3a3100a) |
+| Celo | [`0xa3212332057C479937EA5efE4c92EcE8d3a3100a`](https://celoscan.io/address/0xa3212332057C479937EA5efE4c92EcE8d3a3100a) |
+| Linea | [`0xa3212332057C479937EA5efE4c92EcE8d3a3100a`](https://lineascan.build/address/0xa3212332057C479937EA5efE4c92EcE8d3a3100a) |
+| Avalanche | [`0xa3212332057C479937EA5efE4c92EcE8d3a3100a`](https://snowtrace.io/address/0xa3212332057C479937EA5efE4c92EcE8d3a3100a) |
 
 ## How it works
 
@@ -124,6 +119,20 @@ safe.execTransaction(
     address(restrictedOwnersGuard),
     0,
     abi.encodeCall(RestrictedOwnersGuard.setRestrictedActions, (target, datas, masks)),
+    Enum.Operation.Call,
+    0,
+    0,
+    0,
+    address(0),
+    payable(address(0)),
+    signatures
+);
+
+// 5. Remove the default `CompatibilityFallbackHandler` to disable EIP-1271 signing (https://x.com/mveehkim/status/1889295776200704431)
+safe.execTransaction(
+    address(safe),
+    0,
+    abi.encodeCall(FallbackManager.setFallbackHandler, (address(0))),
     Enum.Operation.Call,
     0,
     0,
