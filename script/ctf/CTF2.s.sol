@@ -7,9 +7,9 @@ import {ISize, DepositParams, WithdrawParams} from "@script/interfaces/ISize.sol
 import {Safe} from "@safe/contracts/Safe.sol";
 import {RestrictedActionsGuard} from "@src/RestrictedActionsGuard.sol";
 import {Enum} from "@safe/contracts/common/Enum.sol";
+import {RestrictedActionsGuardAddressV002} from "@script/addresses/RestrictedActionsGuardAddressV002.sol";
 
-contract CTF2Script is Script, Mainnet {
-    address internal constant RESTRICTED_ACTIONS_GUARD_ADDRESS = 0x457f785000cA495FAe63AAb38C9fC4b2965B106a;
+contract CTF2Script is Script, Mainnet, RestrictedActionsGuardAddressV002 {
     bytes signature1;
 
     function run() public {

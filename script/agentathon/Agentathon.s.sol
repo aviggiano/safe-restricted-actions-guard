@@ -11,9 +11,9 @@ import {FallbackManager} from "@safe/contracts/base/FallbackManager.sol";
 import {RestrictedActionsGuard} from "@src/RestrictedActionsGuard.sol";
 import {Enum} from "@safe/contracts/common/Enum.sol";
 import {ISwapRouterV2} from "@script/interfaces/ISwapRouterV2.sol";
+import {RestrictedActionsGuardAddressV003} from "@script/addresses/RestrictedActionsGuardAddressV003.sol";
 
-contract AgentathonScript is Script {
-    address internal constant RESTRICTED_ACTIONS_GUARD_ADDRESS = 0xa3212332057C479937EA5efE4c92EcE8d3a3100a;
+contract AgentathonScript is Script, RestrictedActionsGuardAddressV003 {
     string[] public networks = ["optimism", "arbitrum", "celo", "linea", "avalanche"];
     address[][] public tokens = [
         [0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85, /* USDC */ 0x4200000000000000000000000000000000000006 /* WETH */ ],

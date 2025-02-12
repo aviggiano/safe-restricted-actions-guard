@@ -11,10 +11,9 @@ import {FallbackManager} from "@safe/contracts/base/FallbackManager.sol";
 import {RestrictedActionsGuard} from "@src/RestrictedActionsGuard.sol";
 import {Enum} from "@safe/contracts/common/Enum.sol";
 import {ISwapRouterV2} from "@script/interfaces/ISwapRouterV2.sol";
+import {RestrictedActionsGuardAddressV003} from "@script/addresses/RestrictedActionsGuardAddressV003.sol";
 
-contract SetGuardThresholdScript is Script {
-    address internal constant RESTRICTED_ACTIONS_GUARD_ADDRESS = 0xa3212332057C479937EA5efE4c92EcE8d3a3100a;
-
+contract SetGuardThresholdScript is Script, RestrictedActionsGuardAddressV003 {
     function run() public {
         vm.createSelectFork("optimism");
         vm.startBroadcast();
