@@ -12,19 +12,26 @@ import {RestrictedActionsGuard} from "@src/RestrictedActionsGuard.sol";
 import {Enum} from "@safe/contracts/common/Enum.sol";
 import {ISwapRouterV2} from "@script/interfaces/ISwapRouterV2.sol";
 import {RestrictedActionsGuardAddressV003} from "@script/addresses/RestrictedActionsGuardAddressV003.sol";
+import {AgentathonNetworks} from "@script/agentathon/AgentathonNetworks.s.sol";
 
-contract SetGuardThresholdScript is Script, RestrictedActionsGuardAddressV003 {
+contract SetGuardThresholdScript is Script, RestrictedActionsGuardAddressV003, AgentathonNetworks {
     function run() public {
-        vm.createSelectFork("optimism");
-        vm.startBroadcast();
+        for (uint256 i = 0; i < networks.length; i++) {
+            vm.createSelectFork(networks[i]);
+            vm.startBroadcast();
 
-        console.log("[SetGuardThreshold] running...");
-        Safe safe = Safe(payable(vm.envAddress("SAFE_ADDRESS")));
+            console.log("[SetGuardThreshold] running...");
+            Safe safe = Safe(payable(vm.envAddress("SAFE_ADDRESS")));
 
-        _setGuardThreshold(safe, 2);
+            if (i == 3) {
+                vm.txGasPrice(1 gwei);
+            }
 
-        console.log("[SetGuardThreshold] done");
-        vm.stopBroadcast();
+            _setGuardThreshold(safe, 2);
+
+            console.log("[SetGuardThreshold] done");
+            vm.stopBroadcast();
+        }
     }
 
     function _execTransaction(Safe safe, address to, bytes memory data) internal {
