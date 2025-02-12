@@ -49,8 +49,6 @@ contract AgentathonScript is Script {
             _setFallbackHandler(safe, address(0));
             console.log("--------------------------------");
             _setGuard(safe, RESTRICTED_ACTIONS_GUARD_ADDRESS, 1);
-            // console.log("--------------------------------");
-            // _changeThreshold(safe, 2); // needs to be set up manually
             console.log("--------------------------------");
             vm.stopBroadcast();
         }
@@ -88,18 +86,6 @@ contract AgentathonScript is Script {
         _execTransaction(safe, address(safe), data);
     }
 
-    function _changeThreshold(Safe safe, uint256 threshold) internal {
-        console.log("[Agentathon] changing threshold");
-        bytes memory data = abi.encodeCall(OwnerManager.changeThreshold, (threshold));
-        _execTransaction(safe, address(safe), data);
-
-        assert(
-            keccak256(
-                abi.encodePacked(RestrictedActionsGuard(RESTRICTED_ACTIONS_GUARD_ADDRESS).getDescription(address(safe)))
-            ) == keccak256("1/2/3")
-        );
-    }
-
     function _tokens(Safe safe, uint256 i) internal {
         address swapRouter = address(swapRouters[i]);
         address[] memory tokensArray = tokens[i];
@@ -117,8 +103,8 @@ contract AgentathonScript is Script {
             masks[0] = abi.encodeWithSelector(bytes4(0xFFFFFFFF), address(uint160(type(uint160).max)), 0);
 
             console.log(target);
-            console.logBytes(patterns[j]);
-            console.logBytes(masks[j]);
+            console.logBytes(patterns[0]);
+            console.logBytes(masks[0]);
 
             _setRestrictedActions(safe, target, patterns, masks);
         }
